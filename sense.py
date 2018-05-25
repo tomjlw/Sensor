@@ -71,7 +71,15 @@ def sense_record(port, path, baud, gbaud, gport):
                           'PM2.5': 7, 'PM5.0': 8, 'PM50.0': 9, 'evaluation': 10}
                sorted(measure_data, key=numbermap.__getitem__)
                output_file.write(str(measure_data) + '\n')
-
+        else:
+            measure_data = {'time_stamp': str(time_record()),
+                            'PM0.3': int(data1[0]), 'PM0.5': int(data1[1]),
+                            'PM1.0': int(data1[2]), 'PM2.5': int(data1[3]),
+                            'PM5.0': int(data1[4]), 'PM50.0': int(data1[5]), 'evaluation': evaluation}
+            numbermap = {'time_stamp': 1, 'PM0.3': 2, 'PM0.5': 3, 'PM1.0': 4,
+                         'PM2.5': 5, 'PM5.0': 6, 'PM50.0': 7, 'evaluation': 8}
+            sorted(measure_data, key=numbermap.__getitem__)
+            output_file.write(str(measure_data) + '\n')
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Read data from PM2.5 sensor and write to a designated file')
