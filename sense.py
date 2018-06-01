@@ -13,7 +13,7 @@ def time_record():
     localtime = time.localtime(time.time())
     strftime = time.strftime("%a, %d %b %Y %H:%M:%S ", localtime)
     strftime = str(strftime)
-    return strftime
+    return str(time.time())
 
 def aqi_evaluation(PM):
     """
