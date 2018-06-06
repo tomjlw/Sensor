@@ -1,7 +1,7 @@
 import ast
-import matplotlib
-import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.dates as md
+import datetime as dt
 
 linelist = []
 file = open('gasoutput0601.txt', 'r')
@@ -16,7 +16,7 @@ PM5_0 = []
 PM50  = []
 time_stamp = []
 
-for i in range(0,len(linelist)):
+for i in range(0, len(linelist), 10):
     linelist[i] = ast.literal_eval(linelist[i])
     PM0_3.append(linelist[i]['PM0.3'])
     PM0_5.append(linelist[i]['PM0.5'])
@@ -24,42 +24,51 @@ for i in range(0,len(linelist)):
     PM2_5.append(linelist[i]['PM2.5'])
     PM5_0.append(linelist[i]['PM5.0'])
     PM50.append(linelist[i]['PM50.0'])
-    time_stamp.append(linelist[i]['time_stamp'])
+    time_stamp.append(float(linelist[i]['time_stamp']))
 
-#print(linelist[0])
-#print (PM0_3)
-#print (PM0_5)
-#print (PM1_0)
-#print (PM2_5)
-#print (PM5_0)
-#print (PM50)
-#print (time_stamp)
-
+print(time_stamp)
 def mysubplot(yaxis, stryaxis):
-    plt.plot(time_stamp, yaxis, 'b')
+
+    '''
+    Used to setup the property for subplot, for x-axis, it will transfer unix timestamp to readable time
+    :param yaxis: y-axis label
+    :param stryaxis: string representation of y-axis
+    :return: plot for different sizes of particles with time_stamp
+    '''
+
+    dates = [dt.datetime.fromtimestamp(ts) for ts in time_stamp]
+    datenums = md.date2num(dates)
+    plt.subplots_adjust(bottom=0.2)
+    plt.xticks(rotation=25)
+    ax = plt.gca()
+    xfmt = md.DateFormatter('%Y-%m-%d %H:%M:%S')
+    ax.xaxis.set_major_formatter(xfmt)
+    plt.plot(datenums, yaxis, 'b')
     plt.title(stryaxis)
-    plt.ylabel('Concentration ug/0.1L')
+    plt.ylabel('concentration(ug/0.1L)')
     plt.xlabel('time_stamp')
 
-
+plt.figure(figsize=(16, 10))
 plt.subplot(3, 2, 1)
-mysubplot(PM0_3, 'PM0_3')
+mysubplot(PM0_3, 'PM0.3')
 
 plt.subplot(3, 2, 2)
-mysubplot(PM0_5, 'PM0_5')
+mysubplot(PM0_5, 'PM0.5')
 
 plt.subplot(3, 2, 3)
-mysubplot(PM1_0, 'PM1_0')
+mysubplot(PM1_0, 'PM1.0')
 
 plt.subplot(3, 2, 4)
-mysubplot(PM2_5, 'PM2_5')
+mysubplot(PM2_5, 'PM2.5')
 
 plt.subplot(3, 2, 5)
-mysubplot(PM5_0, 'PM5_0')
+mysubplot(PM5_0, 'PM5.0')
 
 plt.subplot(3, 2, 6)
 mysubplot(PM50, 'PM50')
 
-plt.suptitle('Particle Concentrations at Duncan Hall(09523 W 2943 N)')
-plt.savefig('Gas1.jpg')
+plt.suptitle('Particle Concentrations at 09523 W 2943 N', fontsize=15)
+plt.tight_layout()
+plt.savefig('Gas.png')
+
 
