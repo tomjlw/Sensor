@@ -8,12 +8,12 @@ def time_record():
     """
     Record the time stamp for each sense and return a string to display the time
     """
-    os.environ['TZ'] = 'US/Central'
-    time.tzset()
-    localtime = time.localtime(time.time())
-    strftime = time.strftime("%a, %d %b %Y %H:%M:%S ", localtime)
-    strftime = str(strftime)
-    return str(time.time())
+#    os.environ['TZ'] = 'US/Central'
+#    time.tzset()
+#    localtime = time.localtime(time.time())
+#    strftime = time.strftime("%a, %d %b %Y %H:%M:%S ", localtime)
+#    strftime = str(strftime)
+    return time.time()
 
 def aqi_evaluation(PM):
     """
@@ -21,17 +21,17 @@ def aqi_evaluation(PM):
     :param PM: Concentration of PM2.5
     :return: Evaluation of air quality
     """
-    if PM <= 15:
+    if PM <= 12:
         return 'Good'
-    elif PM <= 40:
+    elif PM <= 35.4:
         return 'Moderate'
-    elif PM <= 65:
+    elif PM <= 55.4:
         return 'Unhealthy for Sensitive Group'
-    elif PM <= 150:
+    elif PM <= 150.4:
         return 'Unhealthy'
-    elif PM <= 250:
+    elif PM <= 250.4:
         return 'Very Unhealthy'
-    elif PM > 250:
+    elif PM > 250.4:
         return 'Hazardous'
 
 
@@ -55,7 +55,6 @@ def sense_record(port, path, baud, gbaud, gport):
 
     gps = serial.Serial(gport, baudrate=gbaud)
     data = gps.readline().split(',')    # read GPS data from receiver
-    print(data1, data)
     with open(write_to_file_path, "a") as output_file:
         if data[0] == '$GPRMC':
            # print(data1[0:6], data)
@@ -71,6 +70,7 @@ def sense_record(port, path, baud, gbaud, gport):
                           'PM2.5': 7, 'PM5.0': 8, 'PM50.0': 9, 'evaluation': 10}
                sorted(measure_data, key=numbermap.__getitem__)
                output_file.write(str(measure_data) + '\n')
+	       return measure_data
         else:
             measure_data = {'time_stamp': str(time_record()),
                             'PM0.3': int(data1[0]), 'PM0.5': int(data1[1]),
@@ -80,6 +80,7 @@ def sense_record(port, path, baud, gbaud, gport):
                          'PM2.5': 5, 'PM5.0': 6, 'PM50.0': 7, 'evaluation': 8}
             sorted(measure_data, key=numbermap.__getitem__)
             output_file.write(str(measure_data) + '\n')
+	    return measure_data 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Read data from PM2.5 sensor and write to a designated file')
@@ -101,4 +102,5 @@ if __name__ == "__main__":
     print('Sensing start')
     print('Concentration Unit: um/0.1L')
     while True:
-        sense_record(port, path, baud, gbaud, gport)
+	sense_record(port, path, baud, gbaud, gport)
+
