@@ -73,11 +73,18 @@ save and exit
 reboot the raspberrypi and now every time it reboots, it will automatically run the script and generate a log file as long as all the hardwares are set up. If you want to stop, just unplug the Arduino. But if you want to start sensing again, you need either reboot or execute the sense.py from command lines as shown above.
 .
 ├── dataPlot
+
 │   ├── dBmVsDistance
+
 │   ├── dBmVsTime
+
 │   ├── errortimeVsSamples
+
 │   ├── errorVsDrones
+
 │   ├── logs
+
 │   ├── pictures
+
 │   └── util
 
